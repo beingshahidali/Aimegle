@@ -15,11 +15,13 @@ const socket = io("http://localhost:4000");
 function App() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [inputName, setInputName] = useState("");
 
   useEffect(() => {
     // Listen for incoming messages from the server
-    socket.on("chat message", (msg) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
+    socket.on("chat message", (data) => {
+      setMessages((prevMessages) => [...prevMessages, data]);
     });
 
     return () => {
@@ -34,6 +36,14 @@ function App() {
     }
   };
 
+  const setName = () => {
+    if (inputName.trim()) {
+      setUserName(inputName);
+      socket.emit("set name", inputName);
+      setInputName("");
+    }
+  };
+
   return (
     <Container maxWidth="sm">
       <Box sx={{marginTop: 5}}>
@@ -41,14 +51,39 @@ function App() {
           Socket.IO Chat
         </Typography>
 
+        {/* Name input section */}
+        {!userName && (
+          <Box sx={{marginBottom: 2}}>
+            <TextField
+              label="Enter your name"
+              variant="outlined"
+              fullWidth
+              value={inputName}
+              onChange={(e) => setInputName(e.target.value)}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={setName}
+              sx={{marginTop: 1}}
+            >
+              Set Name
+            </Button>
+          </Box>
+        )}
+
+        {/* Chat messages section */}
         <List sx={{maxHeight: 400, overflowY: "scroll", marginBottom: 2}}>
-          {messages.map((msg, index) => (
+          {messages.map((data, index) => (
             <ListItem key={index}>
-              <Typography>{msg}</Typography>
+              <Typography>
+                <strong>{data.user}:</strong> {data.message}
+              </Typography>
             </ListItem>
           ))}
         </List>
 
+        {/* Message input section */}
         <Box display="flex" justifyContent="space-between">
           <TextField
             label="Type a message"

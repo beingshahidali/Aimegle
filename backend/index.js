@@ -25,22 +25,31 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
-  res.send("Server is running!");
-});
+// Store users with their socket id and name
+let users = {};
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  console.log("A user connected:", socket.id);
 
-  // Listen for messages from the client
+  // Set default name for user
+  let userName = `User-${socket.id}`;
+
+  // Listen for the 'set name' event to update the user's name
+  socket.on("set name", (name) => {
+    userName = name;
+    users[socket.id] = userName;
+    console.log(`User ${socket.id} is now named: ${userName}`);
+  });
+
+  // Listen for chat messages
   socket.on("chat message", (msg) => {
-    console.log("Message received: " + msg);
-    // Broadcast the message to all clients
-    io.emit("chat message", msg);
+    // Broadcast the message along with the user's name
+    io.emit("chat message", {user: userName, message: msg});
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
+    console.log("A user disconnected:", socket.id);
+    delete users[socket.id]; // Remove the user from the list on disconnect
   });
 });
 
