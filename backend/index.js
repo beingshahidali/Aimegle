@@ -28,18 +28,28 @@ app.use(
 // Store users with their socket id and name
 let users = {};
 
+// Helper function to generate random names
+function generateRandomName() {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let name = "";
+  for (let i = 0; i < 5; i++) {
+    const randomLetter = letters.charAt(
+      Math.floor(Math.random() * letters.length)
+    );
+    name += randomLetter;
+  }
+  return `User-${name}`;
+}
+
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  // Set default name for user
-  let userName = `User-${socket.id}`;
+  // Automatically assign a random name to the user
+  let userName = generateRandomName();
 
-  // Listen for the 'set name' event to update the user's name
-  socket.on("set name", (name) => {
-    userName = name;
-    users[socket.id] = userName;
-    console.log(`User ${socket.id} is now named: ${userName}`);
-  });
+  // Save the user's name by their socket ID
+  users[socket.id] = userName;
+  console.log(`User ${socket.id} is assigned name: ${userName}`);
 
   // Listen for chat messages
   socket.on("chat message", (msg) => {

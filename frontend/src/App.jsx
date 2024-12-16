@@ -15,8 +15,6 @@ const socket = io("http://localhost:4000");
 function App() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [userName, setUserName] = useState("");
-  const [inputName, setInputName] = useState("");
 
   useEffect(() => {
     // Listen for incoming messages from the server
@@ -36,41 +34,12 @@ function App() {
     }
   };
 
-  const setName = () => {
-    if (inputName.trim()) {
-      setUserName(inputName);
-      socket.emit("set name", inputName);
-      setInputName("");
-    }
-  };
-
   return (
     <Container maxWidth="sm">
       <Box sx={{marginTop: 5}}>
         <Typography variant="h4" gutterBottom align="center">
           Socket.IO Chat
         </Typography>
-
-        {/* Name input section */}
-        {!userName && (
-          <Box sx={{marginBottom: 2}}>
-            <TextField
-              label="Enter your name"
-              variant="outlined"
-              fullWidth
-              value={inputName}
-              onChange={(e) => setInputName(e.target.value)}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={setName}
-              sx={{marginTop: 1}}
-            >
-              Set Name
-            </Button>
-          </Box>
-        )}
 
         {/* Chat messages section */}
         <List sx={{maxHeight: 400, overflowY: "scroll", marginBottom: 2}}>
