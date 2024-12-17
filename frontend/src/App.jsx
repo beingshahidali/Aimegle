@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   Modal,
+  Paper,
 } from "@mui/material";
 import {motion} from "framer-motion";
 import io from "socket.io-client";
@@ -169,21 +170,20 @@ function App() {
                     display: "flex",
                   }}
                 >
-                  <Box
+                  <Paper
                     sx={{
-                      backgroundColor:
-                        msg.from === "Me" ? darkOrange : "#424242",
-                      color: msg.from === "Me" ? "white" : "white",
-                      padding: "8px 12px",
-                      borderRadius: "12px",
+                      bgcolor: msg.from === "Me" ? "primary.main" : "grey.200",
+                      color: msg.from === "Me" ? "white" : "text.primary",
+                      borderRadius: "35px 10px 35px 10px",
+                      padding: "10px 20px",
+                      textAlign: "center",
                       maxWidth: "70%", // Increased message box width
                       fontFamily: "Roboto, Arial, sans-serif", // Changed font family
+                      minWidth: "30px",
                     }}
                   >
-                    <Typography variant="body2">
-                      {msg.from === "Me" ? "Me" : "Stranger"}: {msg.text}
-                    </Typography>
-                  </Box>
+                    <Typography variant="body1">{msg.text}</Typography>
+                  </Paper>
                 </ListItem>
               ))
             )}
