@@ -9,9 +9,14 @@ import {
   ListItem,
   Modal,
 } from "@mui/material";
+import {motion} from "framer-motion";
 import io from "socket.io-client";
 
 const socket = io("http://localhost:4000");
+
+const darkOrange = "#F28C28"; // Darker Orange color for better eye comfort
+const matteBlack = "#212121"; // Matte black background color
+const white = "#FFFFFF"; // White for text and accents
 
 function App() {
   const [status, setStatus] = useState(""); // Status message
@@ -74,7 +79,34 @@ function App() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+        px: 0,
+
+        backgroundColor: matteBlack,
+        color: white,
+      }}
+    >
+      {/* Header */}
+      <Box
+        sx={{
+          backgroundColor: "teal",
+          padding: "16px",
+          textAlign: "center",
+          boxShadow: "0px 2px 10px rgba(117, 53, 53, 0.6)",
+        }}
+      >
+        <Typography variant="h4" color="white" sx={{fontSize: "30px"}}>
+          Chimeglee
+        </Typography>
+        <Typography variant="subtitle1" color="white" sx={{fontSize: "14px"}}>
+          Chat with strangers, connect instantly.
+        </Typography>
+      </Box>
+
       {/* Modal Overlay */}
       <Modal open={!isConnected}>
         <Box
@@ -101,13 +133,14 @@ function App() {
 
       {/* Chat UI */}
       {isConnected && (
-        <Box sx={{marginTop: 5}}>
-          <Typography variant="h3" gutterBottom align="center">
-            One-to-One Chat
-          </Typography>
-
+        <Box sx={{flex: 1, overflowY: "auto"}}>
           {/* Status Message */}
-          <Typography variant="h6" align="center" gutterBottom>
+          <Typography
+            variant="h6"
+            align="center"
+            gutterBottom
+            sx={{color: "white"}}
+          >
             {status}
           </Typography>
 
@@ -137,11 +170,12 @@ function App() {
                   <Box
                     sx={{
                       backgroundColor:
-                        msg.from === "Me" ? "#1976d2" : "#e0e0e0",
-                      color: msg.from === "Me" ? "white" : "black",
+                        msg.from === "Me" ? darkOrange : "#424242",
+                      color: msg.from === "Me" ? "white" : "white",
                       padding: "8px 12px",
                       borderRadius: "12px",
-                      maxWidth: "60%",
+                      maxWidth: "70%", // Increased message box width
+                      fontFamily: "Roboto, Arial, sans-serif", // Changed font family
                     }}
                   >
                     <Typography variant="body2">
@@ -154,7 +188,18 @@ function App() {
           </List>
 
           {/* Message Input */}
-          <Box display="flex" justifyContent="space-between">
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: 0,
+              padding: "8px",
+              backgroundColor: matteBlack,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.3)",
+            }}
+          >
             <TextField
               label="Type a message"
               variant="outlined"
@@ -164,12 +209,23 @@ function App() {
                 setMessage(e.target.value);
                 handleTyping();
               }}
+              sx={{
+                backgroundColor: "white",
+                borderRadius: "8px",
+                marginRight: "8px",
+              }}
             />
             <Button
               variant="contained"
               color="primary"
               onClick={sendMessage}
-              sx={{marginLeft: 2}}
+              sx={{
+                backgroundColor: darkOrange,
+                "&:hover": {
+                  backgroundColor: "#f57c00",
+                },
+                width: "80px",
+              }}
             >
               Send
             </Button>
