@@ -12,6 +12,8 @@ import {
 import {motion} from "framer-motion";
 import io from "socket.io-client";
 
+import ModalContainer from "./components/Modal/ModalContainer";
+
 const socket = io("http://localhost:4000");
 
 const darkOrange = "#F28C28"; // Darker Orange color for better eye comfort
@@ -36,38 +38,6 @@ const rgbAnimation = {
       borderColor: "rgb(255, 0, 255)", // Magenta
     },
   },
-};
-
-const Spinner = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      style={{
-        animation: "spin 1s linear infinite",
-      }}
-    >
-      <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-
-      <style jsx>{`
-        @keyframes spin {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
-    </svg>
-  );
 };
 
 function App() {
@@ -160,70 +130,8 @@ function App() {
       </Box>
 
       {/* Modal Overlay */}
-      <Modal open={!isConnected}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            backgroundColor: "white",
-            boxShadow: 24,
-            p: 4,
-            textAlign: "center",
-            borderRadius: "8px",
-            width: "90%", // Ensure the modal takes 90% of the screen width
-            maxWidth: "400px", // Limit max width for large screens
-            border: "2px solid transparent", // Transparent 2px border
-            bgcolor: "white", //
-            animation:
-              "glowingBorder 3s linear infinite, rgbShift 3s linear infinite", // Apply glowing and moving animation
-            backgroundClip: "border-box", // Clip gradient to border
-            transition: "all 0.3s ease-in-out", // Smooth transition
-            "@keyframes glowingBorder": {
-              "0%": {
-                boxShadow:
-                  "0 0 5px rgba(255, 87, 34, 1), 0 0 10px rgba(255, 87, 34, 1), 0 0 15px rgba(255, 87, 34, 1)",
-              },
-              "50%": {
-                boxShadow:
-                  "0 0 10px rgba(33, 150, 243, 1), 0 0 20px rgba(33, 150, 243, 1), 0 0 30px rgba(33, 150, 243, 1)",
-              },
-              "100%": {
-                boxShadow:
-                  "0 0 5px rgba(255, 87, 34, 1), 0 0 10px rgba(255, 87, 34, 1), 0 0 15px rgba(255, 87, 34, 1)",
-              },
-            },
-            "@keyframes rgbShift": {
-              "0%": {
-                backgroundPosition: "0% 0%",
-              },
-              "50%": {
-                backgroundPosition: "100% 100%",
-              },
-              "100%": {
-                backgroundPosition: "0% 0%",
-              },
-            },
-            // Media query for responsiveness on smaller screens
-            "@media (max-width: 600px)": {
-              width: "80%", // Adjust width for small screens
-              padding: "16px", // Adjust padding for mobile view
-              maxWidth: "90%", // Ensure it doesn't exceed screen width on mobile
-              borderRadius: "4px", // Adjust border radius for smaller screens
-            },
-          }}
-        >
-          <Spinner />
-          <Typography variant="h6" gutterBottom>
-            {status || "Searching for a user..."}
-          </Typography>
-          <Typography variant="h7" sx={{color: "gray"}}>
-            Please wait while we connect you to someone.
-          </Typography>
-        </Box>
-      </Modal>
 
+      <ModalContainer isConnected={isConnected} />
       {/* Chat UI */}
       {isConnected && (
         <Box sx={{flex: 1, overflowY: "auto"}}>
