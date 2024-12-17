@@ -20,26 +20,6 @@ const darkOrange = "#F28C28"; // Darker Orange color for better eye comfort
 const matteBlack = "#212121"; // Matte black background color
 const white = "#FFFFFF"; // White for text and accents
 
-const rgbAnimation = {
-  "@keyframes rgbShift": {
-    "0%": {
-      borderColor: "rgb(255, 0, 0)", // Red
-    },
-    "25%": {
-      borderColor: "rgb(0, 255, 0)", // Green
-    },
-    "50%": {
-      borderColor: "rgb(0, 0, 255)", // Blue
-    },
-    "75%": {
-      borderColor: "rgb(255, 255, 0)", // Yellow
-    },
-    "100%": {
-      borderColor: "rgb(255, 0, 255)", // Magenta
-    },
-  },
-};
-
 function App() {
   const [status, setStatus] = useState(""); // Status message
   const [isConnected, setIsConnected] = useState(false); // Connection state
@@ -121,8 +101,29 @@ function App() {
           boxShadow: "0px 2px 10px rgba(117, 53, 53, 0.6)",
         }}
       >
-        <Typography variant="h4" color="white" sx={{fontSize: "30px"}}>
-          Chimeglee
+        <Typography
+          sx={{
+            fontSize: {
+              xs: "2rem",
+              sm: "2.5rem",
+              md: "3rem",
+              lg: "3.5rem",
+              color: "black",
+            },
+
+            display: "inline-block",
+            ml: "10px",
+
+            paddingRight: "0.25rem",
+            paddingLeft: "0.25rem",
+            borderLeft: "4px solid rgba(220, 196, 163, 0.77)",
+            borderRadius: 0,
+            backgroundImage:
+              "linear-gradient(90deg, rgba(227, 211, 196, 0.95), rgba(255, 117, 71, 0));",
+            lineHeight: 1,
+          }}
+        >
+          Chimegle
         </Typography>
         <Typography variant="subtitle1" color="white" sx={{fontSize: "14px"}}>
           Chat with strangers, connect instantly.
