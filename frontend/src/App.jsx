@@ -13,16 +13,36 @@ import io from "socket.io-client";
 const socket = io("http://localhost:4000");
 
 function App() {
+  const [status, setStatus] = useState(""); // Status message
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    // Listen for incoming messages from the server
+    // Handle "Searching for user..."
+    socket.on("searching", (data) => {
+      setStatus(data.message);
+    });
+
+    // Handle pairing
+    socket.on("paired", (data) => {
+      setStatus(data.message);
+      setMessages([]); // Clear previous chat history
+    });
+
+    // Handle partner leaving
+    socket.on("partner left", (data) => {
+      setStatus(data.message);
+    });
+
+    // Handle incoming chat messages
     socket.on("chat message", (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+      setMessages((prev) => [...prev, `${data.from}: ${data.message}`]);
     });
 
     return () => {
+      socket.off("searching");
+      socket.off("paired");
+      socket.off("partner left");
       socket.off("chat message");
     };
   }, []);
@@ -30,6 +50,7 @@ function App() {
   const sendMessage = () => {
     if (message.trim()) {
       socket.emit("chat message", message);
+      setMessages((prev) => [...prev, `Me: ${message}`]);
       setMessage("");
     }
   };
@@ -38,21 +59,24 @@ function App() {
     <Container maxWidth="sm">
       <Box sx={{marginTop: 5}}>
         <Typography variant="h4" gutterBottom align="center">
-          Socket.IO Chat
+          One-to-One Chat
         </Typography>
 
-        {/* Chat messages section */}
+        {/* Status Message */}
+        <Typography variant="h6" align="center" gutterBottom>
+          {status}
+        </Typography>
+
+        {/* Chat Messages */}
         <List sx={{maxHeight: 400, overflowY: "scroll", marginBottom: 2}}>
-          {messages.map((data, index) => (
+          {messages.map((msg, index) => (
             <ListItem key={index}>
-              <Typography>
-                <strong>{data.user}:</strong> {data.message}
-              </Typography>
+              <Typography>{msg}</Typography>
             </ListItem>
           ))}
         </List>
 
-        {/* Message input section */}
+        {/* Message Input */}
         <Box display="flex" justifyContent="space-between">
           <TextField
             label="Type a message"

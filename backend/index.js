@@ -6,60 +6,100 @@ const cors = require("cors");
 const app = express();
 const server = http.createServer(app);
 
-// Allow CORS for Socket.IO connections
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173", // React frontend URL
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true,
   },
 });
 
-// Enable CORS for Express routes (if you need it for other requests)
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"],
-  })
-);
+// Queue for waiting users
+let waitingQueue = [];
+// Active pairs
+let activePairs = {};
+// User details: socket.id -> { randomName, randomId }
+let userDetails = {};
 
-// Store users with their socket id and name
-let users = {};
+// Generate a random 4-character alphanumeric string
+function generateRandomId() {
+  return Math.random().toString(36).substring(2, 6).toUpperCase();
+}
 
-// Helper function to generate random names
+// Generate a random name from alphabets
 function generateRandomName() {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let name = "";
   for (let i = 0; i < 5; i++) {
-    const randomLetter = letters.charAt(
-      Math.floor(Math.random() * letters.length)
-    );
-    name += randomLetter;
+    name += alphabets.charAt(Math.floor(Math.random() * alphabets.length));
   }
-  return `User-${name}`;
+  return name;
+}
+
+// Function to pair two users
+function pairUsers(user1, user2) {
+  activePairs[user1] = user2;
+  activePairs[user2] = user1;
+
+  const user1Details = userDetails[user1];
+  const user2Details = userDetails[user2];
+
+  // Notify users about pairing and share names/IDs
+  io.to(user1).emit("paired", {
+    message: `You are now connected with ${user2Details.randomName} (${user2Details.randomId}).`,
+  });
+  io.to(user2).emit("paired", {
+    message: `You are now connected with ${user1Details.randomName} (${user1Details.randomId}).`,
+  });
 }
 
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  // Automatically assign a random name to the user
-  let userName = generateRandomName();
+  // Generate random details for the connected user
+  const randomId = generateRandomId();
+  const randomName = generateRandomName();
+  userDetails[socket.id] = {randomName, randomId};
 
-  // Save the user's name by their socket ID
-  users[socket.id] = userName;
-  console.log(`User ${socket.id} is assigned name: ${userName}`);
+  // Check if someone is already in the queue
+  if (waitingQueue.length === 0) {
+    waitingQueue.push(socket.id);
+    socket.emit("searching", {message: "Searching for a user..."});
+  } else {
+    const pairedUser = waitingQueue.shift();
+    pairUsers(socket.id, pairedUser);
+  }
 
   // Listen for chat messages
   socket.on("chat message", (msg) => {
-    // Broadcast the message along with the user's name
-    io.emit("chat message", {user: userName, message: msg});
+    const partner = activePairs[socket.id];
+    if (partner) {
+      io.to(partner).emit("chat message", {
+        from: userDetails[socket.id].randomName,
+        message: msg,
+      });
+    }
   });
 
+  // Handle user disconnection
   socket.on("disconnect", () => {
     console.log("A user disconnected:", socket.id);
-    delete users[socket.id]; // Remove the user from the list on disconnect
+    const partner = activePairs[socket.id];
+
+    if (partner) {
+      io.to(partner).emit("partner left", {
+        message: `${
+          userDetails[socket.id].randomName
+        } has left the chat. Searching for a new user...`,
+      });
+      delete activePairs[partner];
+      waitingQueue.push(partner); // Put the partner back in the queue
+      io.to(partner).emit("searching", {message: "Searching for a user..."});
+    }
+
+    // Clean up
+    delete activePairs[socket.id];
+    delete userDetails[socket.id];
+    waitingQueue = waitingQueue.filter((id) => id !== socket.id);
   });
 });
 
