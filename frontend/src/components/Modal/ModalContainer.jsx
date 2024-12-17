@@ -50,10 +50,9 @@ function ModalContainer({isConnected}) {
           // Media query for responsiveness on smaller screens
           "@media (max-width: 600px)": {
             width: "80%", // Adjust width for small screens
-            padding: "16px", // Adjust padding for mobile view
-            maxWidth: "90%", // Ensure it doesn't exceed screen width on mobile
+            padding: "10px 5px", // Adjust padding for mobile view
+            maxWidth: "80%", // Ensure it doesn't exceed screen width on mobile
             borderRadius: "4px", // Adjust border radius for smaller screens
-            boxShadow: "none", // Remove box shadow for smaller screens to prevent any white borders
           },
         }}
       >

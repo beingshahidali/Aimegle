@@ -7,8 +7,9 @@ import {
   Box,
   List,
   ListItem,
-  Modal,
   Paper,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {motion} from "framer-motion";
 import io from "socket.io-client";
@@ -17,44 +18,45 @@ import ModalContainer from "./components/Modal/ModalContainer";
 
 const socket = io("http://localhost:4000");
 
-const darkOrange = "#F28C28"; // Darker Orange color for better eye comfort
-const matteBlack = "#212121"; // Matte black background color
-const white = "#FFFFFF"; // White for text and accents
+const darkOrange = "#F28C28";
+const matteBlack = "#212121";
+const white = "#FFFFFF";
 
 function App() {
-  const [status, setStatus] = useState(""); // Status message
-  const [isConnected, setIsConnected] = useState(false); // Connection state
+  const [status, setStatus] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [typing, setTyping] = useState("");
+  const [toastOpen, setToastOpen] = useState(false);
+  const [connectionStatusMessage, setConnectionStatusMessage] = useState("");
 
   useEffect(() => {
-    // Handle "Searching for user..."
     socket.on("searching", (data) => {
       setStatus(data.message);
-      setIsConnected(false); // Keep UI hidden
+      setIsConnected(false);
     });
 
-    // Handle pairing
     socket.on("paired", (data) => {
       setStatus(data.message);
-      setIsConnected(true); // Show the chat UI
-      setMessages([]); // Clear previous chat history
+      setIsConnected(true);
+      setMessages([]);
+      setConnectionStatusMessage("You are now connected!");
+      setToastOpen(true);
     });
 
-    // Handle partner leaving
     socket.on("partner left", (data) => {
       setStatus(data.message);
       setTyping("");
-      setIsConnected(false); // Hide UI and show searching modal
+      setIsConnected(false);
+      setConnectionStatusMessage("Oops ! Your partner left the chat...");
+      setToastOpen(true);
     });
 
-    // Handle incoming chat messages
     socket.on("chat message", (data) => {
       setMessages((prev) => [...prev, {from: data.from, text: data.message}]);
     });
 
-    // Typing indicator
     socket.on("typing", (data) => {
       setTyping(`${data.from} is typing...`);
       setTimeout(() => setTyping(""), 1000);
@@ -92,7 +94,6 @@ function App() {
         color: white,
       }}
     >
-      {/* Header */}
       <Box
         sx={{
           px: 0,
@@ -111,10 +112,8 @@ function App() {
               lg: "3.5rem",
               color: "black",
             },
-
             display: "inline-block",
             ml: "10px",
-
             paddingRight: "0.25rem",
             paddingLeft: "0.25rem",
             borderLeft: "4px solid rgba(220, 196, 163, 0.77)",
@@ -130,14 +129,9 @@ function App() {
           Chat with strangers, connect instantly.
         </Typography>
       </Box>
-
-      {/* Modal Overlay */}
-
       <ModalContainer isConnected={isConnected} />
-      {/* Chat UI */}
       {isConnected && (
         <Box sx={{flex: 1, overflowY: "auto"}}>
-          {/* Status Message */}
           <Typography
             variant="h6"
             align="center"
@@ -146,15 +140,11 @@ function App() {
           >
             {status}
           </Typography>
-
-          {/* Typing Indicator */}
           {typing && (
             <Typography align="center" sx={{color: "gray"}}>
               {typing}
             </Typography>
           )}
-
-          {/* Chat Messages */}
           <List sx={{maxHeight: 400, overflowY: "scroll", marginBottom: 2}}>
             {messages.length === 0 ? (
               <Typography align="center" sx={{color: "gray"}}>
@@ -177,8 +167,8 @@ function App() {
                       borderRadius: "35px 10px 35px 10px",
                       padding: "10px 20px",
                       textAlign: "center",
-                      maxWidth: "70%", // Increased message box width
-                      fontFamily: "Roboto, Arial, sans-serif", // Changed font family
+                      maxWidth: "70%",
+                      fontFamily: "Roboto, Arial, sans-serif",
                       minWidth: "30px",
                     }}
                   >
@@ -188,8 +178,6 @@ function App() {
               ))
             )}
           </List>
-
-          {/* Message Input */}
           <Box
             sx={{
               mb: 1,
@@ -225,9 +213,7 @@ function App() {
               onClick={sendMessage}
               sx={{
                 backgroundColor: darkOrange,
-                "&:hover": {
-                  backgroundColor: "#f57c00",
-                },
+                "&:hover": {backgroundColor: "#f57c00"},
                 width: "80px",
               }}
             >
@@ -236,6 +222,19 @@ function App() {
           </Box>
         </Box>
       )}
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={3000}
+        onClose={() => setToastOpen(false)}
+        anchorOrigin={{vertical: "top", horizontal: "center"}}
+      >
+        <Alert
+          onClose={() => setToastOpen(false)}
+          severity={isConnected ? "success" : "error"}
+        >
+          {connectionStatusMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
