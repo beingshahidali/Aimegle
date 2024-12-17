@@ -80,6 +80,14 @@ io.on("connection", (socket) => {
     }
   });
 
+  // Typing indicator
+  socket.on("typing", () => {
+    const partner = activePairs[socket.id];
+    if (partner) {
+      io.to(partner).emit("typing", {from: userDetails[socket.id].randomName});
+    }
+  });
+
   // Handle user disconnection
   socket.on("disconnect", () => {
     console.log("A user disconnected:", socket.id);
