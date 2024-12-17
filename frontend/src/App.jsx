@@ -84,8 +84,7 @@ function App() {
         display: "flex",
         flexDirection: "column",
         height: "100vh",
-        px: 0,
-
+        minWidth: "100vw",
         backgroundColor: matteBlack,
         color: white,
       }}
@@ -93,6 +92,7 @@ function App() {
       {/* Header */}
       <Box
         sx={{
+          px: 0,
           backgroundColor: "teal",
           padding: "16px",
           textAlign: "center",
@@ -190,8 +190,10 @@ function App() {
           {/* Message Input */}
           <Box
             sx={{
+              mb: 1,
               position: "absolute",
               bottom: 0,
+              width: "90%",
               padding: "8px",
               backgroundColor: matteBlack,
               display: "flex",
