@@ -18,6 +18,26 @@ const darkOrange = "#F28C28"; // Darker Orange color for better eye comfort
 const matteBlack = "#212121"; // Matte black background color
 const white = "#FFFFFF"; // White for text and accents
 
+const rgbAnimation = {
+  "@keyframes rgbShift": {
+    "0%": {
+      borderColor: "rgb(255, 0, 0)", // Red
+    },
+    "25%": {
+      borderColor: "rgb(0, 255, 0)", // Green
+    },
+    "50%": {
+      borderColor: "rgb(0, 0, 255)", // Blue
+    },
+    "75%": {
+      borderColor: "rgb(255, 255, 0)", // Yellow
+    },
+    "100%": {
+      borderColor: "rgb(255, 0, 255)", // Magenta
+    },
+  },
+};
+
 function App() {
   const [status, setStatus] = useState(""); // Status message
   const [isConnected, setIsConnected] = useState(false); // Connection state
@@ -120,12 +140,52 @@ function App() {
             p: 4,
             textAlign: "center",
             borderRadius: "8px",
+            width: "90%", // Ensure the modal takes 90% of the screen width
+            maxWidth: "400px", // Limit max width for large screens
+            border: "2px solid transparent", // Transparent 2px border
+            bgcolor: "white", //
+            animation:
+              "glowingBorder 3s linear infinite, rgbShift 3s linear infinite", // Apply glowing and moving animation
+            backgroundClip: "border-box", // Clip gradient to border
+            transition: "all 0.3s ease-in-out", // Smooth transition
+            "@keyframes glowingBorder": {
+              "0%": {
+                boxShadow:
+                  "0 0 5px rgba(255, 87, 34, 1), 0 0 10px rgba(255, 87, 34, 1), 0 0 15px rgba(255, 87, 34, 1)",
+              },
+              "50%": {
+                boxShadow:
+                  "0 0 10px rgba(33, 150, 243, 1), 0 0 20px rgba(33, 150, 243, 1), 0 0 30px rgba(33, 150, 243, 1)",
+              },
+              "100%": {
+                boxShadow:
+                  "0 0 5px rgba(255, 87, 34, 1), 0 0 10px rgba(255, 87, 34, 1), 0 0 15px rgba(255, 87, 34, 1)",
+              },
+            },
+            "@keyframes rgbShift": {
+              "0%": {
+                backgroundPosition: "0% 0%",
+              },
+              "50%": {
+                backgroundPosition: "100% 100%",
+              },
+              "100%": {
+                backgroundPosition: "0% 0%",
+              },
+            },
+            // Media query for responsiveness on smaller screens
+            "@media (max-width: 600px)": {
+              width: "80%", // Adjust width for small screens
+              padding: "16px", // Adjust padding for mobile view
+              maxWidth: "90%", // Ensure it doesn't exceed screen width on mobile
+              borderRadius: "4px", // Adjust border radius for smaller screens
+            },
           }}
         >
-          <Typography variant="h5" gutterBottom>
+          <Typography variant="h6" gutterBottom>
             {status || "Searching for a user..."}
           </Typography>
-          <Typography sx={{color: "gray"}}>
+          <Typography variant="h7" sx={{color: "gray"}}>
             Please wait while we connect you to someone.
           </Typography>
         </Box>
