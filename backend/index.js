@@ -45,10 +45,12 @@ function pairUsers(user1, user2) {
 
   // Notify users about pairing and share names/IDs
   io.to(user1).emit("paired", {
-    message: `You are now connected with ${user2Details.randomName} (${user2Details.randomId}).`,
+    // message: `You are now connected with ${user2Details.randomName} (${user2Details.randomId}).`,
+    message: `You are now connected with a stranger.`,
   });
   io.to(user2).emit("paired", {
-    message: `You are now connected with ${user1Details.randomName} (${user1Details.randomId}).`,
+    // message: `You are now connected with ${user1Details.randomName} (${user1Details.randomId}).`,
+    message: `You are now connected with a stranger.`,
   });
 }
 

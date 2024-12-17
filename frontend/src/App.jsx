@@ -49,7 +49,7 @@ function App() {
     // Typing indicator
     socket.on("typing", (data) => {
       setTyping(`${data.from} is typing...`);
-      setTimeout(() => setTyping(""), 2000);
+      setTimeout(() => setTyping(""), 1000);
     });
 
     return () => {
@@ -102,7 +102,7 @@ function App() {
       {/* Chat UI */}
       {isConnected && (
         <Box sx={{marginTop: 5}}>
-          <Typography variant="h4" gutterBottom align="center">
+          <Typography variant="h3" gutterBottom align="center">
             One-to-One Chat
           </Typography>
 
