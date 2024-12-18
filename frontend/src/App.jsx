@@ -109,38 +109,61 @@ const App = () => {
     >
       <Box
         sx={{
-          px: 0,
-          backgroundColor: "teal",
-          padding: "16px",
+          px: 2,
+          backgroundColor: "#004d4d",
           textAlign: "center",
-          boxShadow: "0px 2px 10px rgba(117, 53, 53, 0.6)",
+          boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.4)",
         }}
       >
-        <Typography
+        <Box
           sx={{
-            fontSize: {
-              xs: "2rem",
-              sm: "2.5rem",
-              md: "3rem",
-              lg: "3.5rem",
-              color: "black",
-            },
-            display: "inline-block",
-            ml: "10px",
-            paddingRight: "0.25rem",
-            paddingLeft: "0.25rem",
-            borderLeft: "4px solid rgba(220, 196, 163, 0.77)",
-            borderRadius: 0,
-            backgroundImage:
-              "linear-gradient(90deg, rgba(227, 211, 196, 0.95), rgba(255, 117, 71, 0));",
-            lineHeight: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: {xs: "column", md: "row"},
+            gap: 2,
           }}
         >
-          Aimegle
-        </Typography>
-        <Typography variant="subtitle1" color="white" sx={{fontSize: "14px"}}>
-          Chat with strangers, connect instantly.
-        </Typography>
+          <img
+            src="https://png.pngtree.com/png-clipart/20220131/original/pngtree-entrepreneurs-plan-tasks-and-business-goals-with-partners-for-business-success-png-image_7259414.png"
+            width={80}
+            height={80}
+            style={{borderRadius: "50%", border: "3px solid white"}}
+            alt="Aimegle Logo"
+          />
+          <Box sx={{display: "flex", flexDirection: "column"}}>
+            <Typography
+              sx={{
+                fontSize: {
+                  xs: "1.8rem",
+                  sm: "2.2rem",
+                  md: "2.8rem",
+                  lg: "3.2rem",
+                },
+                fontWeight: 700,
+                color: "white",
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                background: "linear-gradient(90deg, #f07b0e, #ff7547)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                display: "inline-block",
+              }}
+            >
+              Aimegle
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{
+                fontSize: "16px",
+                color: "#cfd8dc",
+                fontStyle: "italic",
+              }}
+            >
+              Chat with strangers, connect instantly.
+            </Typography>
+          </Box>
+        </Box>
       </Box>
       <ModalContainer isConnected={isConnected} />
       {isConnected && (
