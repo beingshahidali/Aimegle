@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {
   TextField,
   Button,
@@ -11,7 +11,6 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import {motion} from "framer-motion";
 import io from "socket.io-client";
 
 import ModalContainer from "./components/Modal/ModalContainer";
@@ -30,6 +29,13 @@ function App() {
   const [typing, setTyping] = useState("");
   const [toastOpen, setToastOpen] = useState(false);
   const [connectionStatusMessage, setConnectionStatusMessage] = useState("");
+  const messageInputRef = useRef(null); // Ref for the input field
+
+  useEffect(() => {
+    if (isConnected && messageInputRef.current) {
+      messageInputRef.current.focus();
+    }
+  }, [isConnected]);
 
   useEffect(() => {
     socket.on("searching", (data) => {
@@ -197,6 +203,7 @@ function App() {
               variant="outlined"
               fullWidth
               value={message}
+              inputRef={messageInputRef}
               onChange={(e) => {
                 setMessage(e.target.value);
                 handleTyping();
