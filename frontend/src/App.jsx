@@ -21,7 +21,7 @@ const darkOrange = "#F28C28";
 const matteBlack = "#212121";
 const white = "#FFFFFF";
 
-function App() {
+const App = () => {
   const [status, setStatus] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [message, setMessage] = useState("");
@@ -30,6 +30,7 @@ function App() {
   const [toastOpen, setToastOpen] = useState(false);
   const [connectionStatusMessage, setConnectionStatusMessage] = useState("");
   const messageInputRef = useRef(null); // Ref for the input field
+  const lastMessageRef = useRef(null); // Ref for the last message
 
   useEffect(() => {
     if (isConnected && messageInputRef.current) {
@@ -55,7 +56,7 @@ function App() {
       setStatus(data.message);
       setTyping("");
       setIsConnected(false);
-      setConnectionStatusMessage("Oops ! Your partner left the chat...");
+      setConnectionStatusMessage("Oops! Your partner left the chat...");
       setToastOpen(true);
     });
 
@@ -76,6 +77,12 @@ function App() {
       socket.off("typing");
     };
   }, []);
+
+  useEffect(() => {
+    if (lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({behavior: "smooth"});
+    }
+  }, [messages]); // Trigger scroll when messages change
 
   const sendMessage = () => {
     if (message.trim()) {
@@ -188,6 +195,9 @@ function App() {
                   >
                     <Typography variant="body1">{msg.text}</Typography>
                   </Paper>
+                  {index === messages.length - 1 && (
+                    <div ref={lastMessageRef} /> // Attach the ref to the last message
+                  )}
                 </ListItem>
               ))
             )}
@@ -261,6 +271,5 @@ function App() {
       </Snackbar>
     </Container>
   );
-}
-
+};
 export default App;
