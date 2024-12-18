@@ -142,15 +142,22 @@ function App() {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{color: "white"}}
+            sx={{color: "white", fontSize: "15px"}}
           >
             {status}
           </Typography>
-          {typing && (
-            <Typography align="center" sx={{color: "gray"}}>
-              {typing}
-            </Typography>
-          )}
+          <Box
+            sx={{
+              height: "20px", // Fixed height to prevent movement
+              textAlign: "center",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "gray",
+            }}
+          >
+            {typing && <Typography>{typing}</Typography>}
+          </Box>
           <List sx={{maxHeight: 400, overflowY: "scroll", marginBottom: 2}}>
             {messages.length === 0 ? (
               <Typography align="center" sx={{color: "gray"}}>
