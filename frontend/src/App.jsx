@@ -201,12 +201,21 @@ function App() {
                 setMessage(e.target.value);
                 handleTyping();
               }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault(); // Prevent newline in input
+                  sendMessage(); // Send the message
+                  e.target.focus(); // Refocus the input field
+                }
+              }}
               sx={{
                 backgroundColor: "white",
                 borderRadius: "8px",
                 marginRight: "8px",
               }}
+              inputProps={{style: {fontFamily: "Roboto, Arial, sans-serif"}}}
             />
+
             <Button
               variant="contained"
               color="primary"
