@@ -15,7 +15,7 @@ import io from "socket.io-client";
 
 import ModalContainer from "./components/Modal/ModalContainer";
 
-const socket = io("http://localhost:4000");
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 const darkOrange = "#F28C28";
 const matteBlack = "#212121";
