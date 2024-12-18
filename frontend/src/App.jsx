@@ -158,7 +158,7 @@ function App() {
           >
             {typing && <Typography>{typing}</Typography>}
           </Box>
-          <List sx={{maxHeight: 400, overflowY: "scroll", marginBottom: 2}}>
+          <List sx={{maxHeight: 400, overflowY: "scroll", marginBottom: 1}}>
             {messages.length === 0 ? (
               <Typography align="center" sx={{color: "gray"}}>
                 No messages yet. Start the conversation!
@@ -171,6 +171,7 @@ function App() {
                     justifyContent:
                       msg.from === "Me" ? "flex-end" : "flex-start",
                     display: "flex",
+                    padding: "4px",
                   }}
                 >
                   <Paper
