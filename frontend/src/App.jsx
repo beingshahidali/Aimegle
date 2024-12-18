@@ -136,7 +136,7 @@ const App = () => {
             lineHeight: 1,
           }}
         >
-          Chimegle
+          Aimegle
         </Typography>
         <Typography variant="subtitle1" color="white" sx={{fontSize: "14px"}}>
           Chat with strangers, connect instantly.
